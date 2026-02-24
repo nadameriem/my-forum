@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login / Sign Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="auth-wrapper">
+    <div class="auth-hero">
+  <h1>Welcome to UniPortal</h1>
+  <p>
+    Access your academic space, manage your courses, 
+    and stay connected with your university in one place.
+  </p>
+</div>
+<div class="auth-card">
+    <!-- Toggle Buttons -->
+    <div class="auth-toggle">
+      <button class="toggle-btn active" id="loginBtn">Login</button>
+      <button class="toggle-btn" id="signupBtn">Sign Up</button>
+    </div>
+
+    
+
+      <!-- LOGIN FORM -->
+    <form id="loginForm" novalidate>
+        <h2>Welcome Back</h2>
+        <div class="form-message" id="loginMessage"></div>
+        <div class="input-group">
+          <label for="loginEmail">Email</label>
+          <input 
+            type="email" 
+            id="loginEmail" 
+            name="email"
+            placeholder="example@email.com"
+            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+            required>
+        </div>
+
+        <div class="input-group">
+          <label for="loginPassword">Password</label>
+          <input 
+            type="password" 
+            id="loginPassword" 
+            name="password"
+            minlength="6"
+            required>
+        </div>
+
+        <button type="submit" class="auth-btn">Login</button>
+      </form>
+
+      <!-- SIGNUP FORM -->
+    <form id="signupForm" class="hidden" novalidate>
+  <h2>Create Account</h2>
+
+  <div class="form-message" id="signupMessage"></div>
+
+  <div class="input-group">
+    <label for="fullname">Full Name</label>
+    <input type="text" id="fullname" name="fullname" required>
+  </div>
+
+  <div class="input-group">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" required>
+  </div>
+
+  <div class="input-group">
+    <label for="phone">Phone Number</label>
+    <input type="tel" id="phone" name="phone" placeholder="ex:05******98" required>
+  </div>
+
+  <div class="input-group">
+    <label for="signupEmail">Email</label>
+    <input type="email" id="signupEmail" name="email" pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" placeholder="example@email.com" required>
+  </div>
+
+  <div class="input-group">
+  <label for="birthday">Birthday</label>
+  <input 
+    type="date"
+    id="birthday"
+    name="birthday"
+    required>
+</div>
+
+<div class="input-group">
+  <label>Academic Interests</label>
+
+<div class="hobby-options">
+  <button type="button" class="hobby-btn">Programming</button>
+  <button type="button" class="hobby-btn">Design</button>
+  <button type="button" class="hobby-btn">Research</button>
+</div>
+
+  <!-- Hidden input to store selected hobbies -->
+  <input type="hidden" id="hobbies" name="hobbies" required>
+</div>
+
+  <div class="input-group">
+    <label for="signupPassword">Password</label>
+    <input type="password" id="signupPassword" name="password" minlength="6" required>
+  </div>
+
+  <div class="input-group">
+    <label for="confirmPassword">Confirm Password</label>
+    <input type="password" id="confirmPassword" name="confirmPassword" required>
+  </div>
+
+  <button type="submit" class="auth-btn">Sign Up</button>
+</form>
+
+    </div>
+  </div>
+
+<script>
+const loginBtn = document.getElementById("loginBtn");
+const signupBtn = document.getElementById("signupBtn");
+const loginForm = document.getElementById("loginForm");
+const signupForm = document.getElementById("signupForm");
+
+/* ================= TOGGLE ================= */
+
+loginBtn.onclick = () => { 
+    loginForm.classList.remove("hidden");
+     signupForm.classList.add("hidden"); 
+     loginBtn.classList.add("active"); 
+     signupBtn.classList.remove("active"); 
+
+}; 
+signupBtn.onclick = () => { 
+signupForm.classList.remove("hidden");
+ loginForm.classList.add("hidden"); 
+ signupBtn.classList.add("active"); 
+ loginBtn.classList.remove("active"); 
+};
+
+/* ================= HELPERS ================= */
+
+function showMessage(id, message, type) {
+  const box = document.getElementById(id);
+  box.textContent = message;
+  box.className = `form-message ${type}`;
+  box.style.display = "block";
+}
+
+function hideMessage(id) {
+  const box = document.getElementById(id);
+  box.textContent = "";
+  box.style.display = "none";
+  box.className = "form-message";
+}
+
+function clearInputErrors(form) {
+  form.querySelectorAll("input").forEach(input => {
+    input.classList.remove("input-error");
+  });
+}
+
+/* Hide message when typing again */
+document.querySelectorAll("input").forEach(input => {
+  input.addEventListener("input", () => {
+    hideMessage("loginMessage");
+    hideMessage("signupMessage");
+  });
+});
+
+/* ================= LOGIN ================= */
+
+loginForm.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  clearInputErrors(loginForm);
+  hideMessage("loginMessage");
+
+  const email = document.getElementById("loginEmail");
+  const password = document.getElementById("loginPassword");
+
+  if (!email.value.trim() || !password.value.trim()) {
+    showMessage("loginMessage", "Please fill in all required fields.", "error");
+
+    if (!email.value.trim()) email.classList.add("input-error");
+    if (!password.value.trim()) password.classList.add("input-error");
+    return;
+  }
+
+  if (!isValidEmail(email.value.trim())) {
+    email.classList.add("input-error");
+    showMessage("loginMessage", "Please enter a valid email address.", "error");
+    return;
+  }
+
+  showMessage("loginMessage", "✅ You logged in successfully!", "success");
+  loginForm.reset();
+});
+/* ================= SIGNUP ================= */
+
+signupForm.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  clearInputErrors(signupForm);
+  hideMessage("signupMessage");
+
+  const inputs = signupForm.querySelectorAll("input");
+  const password = document.getElementById("signupPassword");
+  const confirmPassword = document.getElementById("confirmPassword");
+
+  let hasEmpty = false;
+
+  inputs.forEach(input => {
+    if (!input.value.trim()) {
+      input.classList.add("input-error");
+      hasEmpty = true;
+    }
+  });
+
+  if (hasEmpty) {
+    showMessage("signupMessage", "Please complete all required fields.", "error");
+    return;
+  }
+  const email = document.getElementById("signupEmail");
+
+if (!isValidEmail(email.value.trim())) {
+  email.classList.add("input-error");
+  showMessage("signupMessage", "Please enter a valid email address.", "error");
+  return;
+}
+const hobbies = document.getElementById("hobbies");
+
+if (!hobbies.value.trim()) {
+  showMessage("signupMessage", "Please select at least one hobby.", "error");
+  return;
+}
+
+  if (password.value !== confirmPassword.value) {
+    password.classList.add("input-error");
+    confirmPassword.classList.add("input-error");
+
+    showMessage("signupMessage", "Passwords do not match.", "error");
+    return;
+  }
+
+  showMessage("signupMessage", "🎉 Account created successfully!", "success");
+  signupForm.reset();
+
+// Reset hobby buttons
+hobbyButtons.forEach(btn => {
+  btn.classList.remove("active");
+});
+
+// Clear hidden hobbies input
+hobbiesInput.value = "";
+});
+
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+/* ================= HOBBY SELECTION ================= */
+
+const hobbyButtons = document.querySelectorAll(".hobby-btn");
+const hobbiesInput = document.getElementById("hobbies");
+
+hobbyButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    button.classList.toggle("active");
+
+    const selected = [...document.querySelectorAll(".hobby-btn.active")]
+      .map(btn => btn.textContent);
+
+    hobbiesInput.value = selected.join(", ");
+  });
+});
+</script>
+
+</body>
+</html>
