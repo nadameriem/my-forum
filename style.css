@@ -213,6 +213,15 @@ form {
   .auth-card h2 {
     font-size: 1.7rem;
   }
+  
+  .auth-wrapper {
+    gap: 2rem;
+  }
+
+  .auth-hero h1 {
+    font-size: 2rem;
+  }
+
 }
 
 /* ================= AUTH BACKGROUND ================= */
@@ -362,4 +371,5 @@ input[type="date"]:focus {
 
 .hobby-btn:hover {
   transform: translateY(-2px);
+
 }
